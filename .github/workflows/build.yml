@@ -37,7 +37,7 @@ jobs:
       - name: Build
         working-directory:
         run: |
-          cmake -S . -B out/Release -DDAWN_ENABLE_INSTALL -DCMAKE_BUILD_TYPE=Release
+          cmake -S . -B out/Release -DDAWN_ENABLE_INSTALL=ON -DCMAKE_BUILD_TYPE=Release
           cmake --build out/Release
           cmake --install out/Release --prefix install/Release
 
