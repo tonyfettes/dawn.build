@@ -1,0 +1,48 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.12"
+
+      - name: Add depot_tools to PATH
+        run: |
+          echo "${PWD}/depot_tools" >> $GITHUB_PATH
+
+      - name: Install System Dependencies
+        run: |
+          apt-get install libxrandr-dev libxinerama-dev libxcursor-dev mesa-common-dev libx11-xcb-dev pkg-config nodejs npm
+
+      - name: Install Dependencies
+        working-directory: dawn
+        run: |
+          cp scripts/standalone.gclient .gclient
+          gclient sync
+
+      - name: Build
+        working-directory:
+        run: |
+          cmake -S . -B out/Release -DDAWN_ENABLE_INSTALL -DCMAKE_BUILD_TYPE=Release
+          cmake --build out/Release
+          cmake --install out/Release --prefix install/Release
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dawn-linux-amd64
+          path: dawn/install/Release
