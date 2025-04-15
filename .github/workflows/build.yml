@@ -35,7 +35,7 @@ jobs:
           gclient sync
 
       - name: Build
-        working-directory:
+        working-directory: dawn
         run: |
           cmake -S . -B out/Release -DDAWN_ENABLE_INSTALL=ON -DCMAKE_BUILD_TYPE=Release
           cmake --build out/Release
